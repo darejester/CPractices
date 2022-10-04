@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <string.h>
+#include<sys/wait.h>
+
+//#define write 1 
+//#define read 0
+
+int c1pid;
+int c2pid;
+int c1p[2] = {0,1};
+int c2p[2] = {0,1};
+
+
+void child(int i)
+{
+	if(i == 0)
+	{
+		close(c1p[0]);
+		c1pid = getpid();
+	    write(c1p[1], &c1pid, sizeof(c1pid));
+	}
+	else if(i == 1)
+	{
+		close(c2p[0]);
+		c2pid = getpid();
+	    write(c2p[1], &c2pid, sizeof(c2pid));
+	}
+	
+}
+
+int main()
+{
+    int ppid = getpid();
+
+	pipe(c1p);
+	pipe(c2p);
+	
+	//printf("i = %d\n", i);
+	printf("my ID: %d \n", ppid);
+
+	for(int i = 0; i<2; i++)
+	{
+		//sleep(5); no because parent would call fork, so it's just parent sleeping without children
+		if (fork() == 0)//child
+        {
+        	//sleep(5); child doesnt need to sleep
+        	child(i);
+    	}
+	}
+	
+	if(getpid()==ppid)
+	{
+		sleep(5);
+    	close(c1p[1]);
+        read(c1p[0], &c1pid, sizeof(c1pid));//read message waiting in pipe "c1p"
+        printf("child 1's ID: %d \n", c1pid);
+        
+        close(c2p[1]);
+        read(c2p[0], &c2pid, sizeof(c2pid));//read message waiting in pipe "c2p"
+        printf("child 2's ID: %d \n", c2pid);
+        
+        printf("=============\n");
+	}
+			
+       
+}
+
+
+
+

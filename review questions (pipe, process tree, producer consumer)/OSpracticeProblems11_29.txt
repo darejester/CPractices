@@ -1,0 +1,18 @@
+1. Write code to implement the following child process communication -
+Create two child processes. Each child process sends their pid to the parent process using pipes and parent process prints them.
+You may use wait() to synchronize between the parent process and the child processes
+
+2. Write code to implement the following process tree -
+
+		A
+	       / \
+              /   \
+             B     C
+            / \     \
+           /   \     \
+          D     E     F
+
+Each child process prints their pid and parents pid. Each parent kill their child process after they print their pid
+
+3. Create two producer threads and two consumer threads. Two producer threads produces 50 random numbers each and consumer threads consume them via a buffer of size 20
+Write code to implement this producer consumer problem.
